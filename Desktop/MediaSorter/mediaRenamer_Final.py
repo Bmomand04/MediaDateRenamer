@@ -1,4 +1,5 @@
 import os
+import os.path
 import exiftool
 import json
 
@@ -22,7 +23,7 @@ import json
 folder_path = r"C:\Users\user\Desktop\MediaSorter\Test"
 with exiftool.ExifToolHelper() as et:
     for filename in os.listdir(folder_path):
-        old_path = os.path.join(folder_path, filename)
+        old_path = os.path.join(folder_path, filename) #filename = OLD NAME
         # Skip if not a file
         if not os.path.isfile(old_path):
             continue
@@ -65,10 +66,19 @@ with exiftool.ExifToolHelper() as et:
         new_name += UNDERSCORE
         new_name += YEAR
         new_name += EXT
-
         #print(new_name)
-
         new_path = os.path.join(folder_path, new_name)
+        base_name = new_name
+        count = 1
 
-        os.rename(old_path, new_path)
+        while os.path.exists(new_path):
+            extra = '(' + str(count) + ')'
+            char_find = '.'
+            new_name = base_name.replace(char_find, extra + char_find)
+            new_path = os.path.join(folder_path, new_name)
+            count += 1
+
+        if (new_path != old_path):
+            os.rename(old_path, new_path)
+        continue
 
